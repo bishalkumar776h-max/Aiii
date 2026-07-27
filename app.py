@@ -1,24 +1,25 @@
 from flask import Flask, request, Response
 from g4f.client import Client
 import json
-import os
-import tempfile
 
 app = Flask(__name__)
 app.config["JSON_SORT_KEYS"] = False
 
-# Set temporary directory for cache
-os.environ["G4F_TEMP"] = tempfile.gettempdir()
-
-# Configure client with disabled cache
 client = Client()
+
+DEVELOPER_INFO = {
+    "developer": "@jubayer_Codex",
+    "group": "https://t.me/Jubayer_Like",
+    "version": "v3.0"
+}
 
 
 @app.route("/", methods=["GET"])
 def home():
     data = {
-        "message": "Bishal AI API is running.",
-        "endpoint": "/question?q=Your Question"
+        "message": "Jubayer AI API is running.",
+        "endpoint": "/get_ai?question=Your Question",
+        "developer": DEVELOPER_INFO
     }
 
     return Response(
@@ -27,15 +28,15 @@ def home():
     )
 
 
-@app.route("/question", methods=["GET"])
+@app.route("/get_ai", methods=["GET"])
 def get_ai():
-    question = request.args.get("q")
-    print_button = request.args.get("print", "false").lower() == "true"
+    question = request.args.get("question")
 
     if not question:
         data = {
             "status": False,
-            "error": "Question parameter is required. Use ?q=your question"
+            "error": "Question parameter is required.",
+            "developer": DEVELOPER_INFO
         }
 
         return Response(
@@ -45,7 +46,6 @@ def get_ai():
         )
 
     try:
-        # Use a custom session with no cache
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -53,43 +53,28 @@ def get_ai():
                     "role": "user",
                     "content": question
                 }
-            ],
-            # Disable cache
-            timeout=60,
-            stream=False
+            ]
         )
 
         answer = response.choices[0].message.content.strip()
 
-        if print_button:
-            print_response = f"""
-========================================
-        BISHAL AI RESPONSE
-========================================
-
-Question: {question}
-
-Answer:
-{answer}
-
-========================================
-        Printed on: {__import__('datetime').datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-========================================
-"""
-            return Response(
-                print_response,
-                mimetype="text/plain"
-            )
+        data = {
+            "answer": answer,
+            "question": question,
+            "status": True,
+            "developer": DEVELOPER_INFO
+        }
 
         return Response(
-            answer,
-            mimetype="text/plain"
+            json.dumps(data, ensure_ascii=False, indent=2),
+            mimetype="application/json"
         )
 
     except Exception as e:
         data = {
             "status": False,
-            "error": str(e)
+            "error": str(e),
+            "developer": DEVELOPER_INFO
         }
 
         return Response(
@@ -99,9 +84,5 @@ Answer:
         )
 
 
-# Vercel handler
-app = app
-
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=True)
