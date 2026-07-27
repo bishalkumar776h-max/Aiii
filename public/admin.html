@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | AI Premium Suite</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body data-theme="dark">
+    <div class="app-shell">
+        <aside class="app-sidebar" id="appSidebar">
+            <div class="brand"><i class="fas fa-shield-halved"></i><span>Admin Panel</span></div>
+            <button class="side-link active" data-view="overview"><i class="fas fa-gauge"></i> Overview</button>
+            <button class="side-link" data-view="users"><i class="fas fa-users"></i> Users</button>
+            <a class="side-link" href="/dashboard.html"><i class="fas fa-user"></i> My Dashboard</a>
+            <a class="side-link" href="/index.html"><i class="fas fa-house"></i> Back to Site</a>
+            <div style="margin-top:auto;">
+                <button class="side-link" id="sidebarLogoutBtn"><i class="fas fa-right-from-bracket"></i> Log Out</button>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <div class="app-topbar">
+                <div>
+                    <h1>Admin Overview</h1>
+                    <p>Platform-wide stats and user management.</p>
+                </div>
+                <div id="navAuthSlot"></div>
+            </div>
+
+            <div id="view-overview">
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <div class="stat-card-top"><span class="stat-label">Total Users</span><div class="stat-icon" style="background:#6366f1;"><i class="fas fa-users"></i></div></div>
+                        <div class="stat-value" id="statTotalUsers">-</div>
+                        <span class="stat-delta" id="statNewUsers"></span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-top"><span class="stat-label">Active Users</span><div class="stat-icon" style="background:#10b981;"><i class="fas fa-user-check"></i></div></div>
+                        <div class="stat-value" id="statActiveUsers">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-top"><span class="stat-label">Chat Messages</span><div class="stat-icon" style="background:#ec4899;"><i class="fas fa-comments"></i></div></div>
+                        <div class="stat-value" id="statMessages">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-top"><span class="stat-label">Images Generated</span><div class="stat-icon" style="background:#f59e0b;"><i class="fas fa-images"></i></div></div>
+                        <div class="stat-value" id="statImages">-</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header"><h3>Signups — Last 14 Days</h3></div>
+                    <div class="chart-wrap"><canvas id="signupChart"></canvas></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header"><h3>Top Image Generators</h3></div>
+                    <table class="data-table" id="topGeneratorsTable">
+                        <thead><tr><th>User</th><th>Images Generated</th></tr></thead>
+                        <tbody><tr><td colspan="2">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-users" style="display:none;">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>All Users</h3>
+                        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+                            <input type="text" class="search-input" id="userSearch" placeholder="Search username or email...">
+                            <select class="select-input" id="statusFilter">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="suspended">Suspended</option>
+                                <option value="banned">Banned</option>
+                            </select>
+                            <select class="select-input" id="roleFilter">
+                                <option value="">All Roles</option>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="data-table" id="usersTable">
+                        <thead>
+                            <tr><th>User</th><th>Role</th><th>Status</th><th>Joined</th><th>Stats</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="usersTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
+                    </table>
+                    <div id="usersPagination" style="display:flex;justify-content:center;gap:0.5rem;margin-top:1rem;"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>
